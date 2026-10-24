@@ -1,12 +1,16 @@
 import { useContext } from "react";
-import { Box, Divider, Grid, Typography, IconButton } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { Box, Divider } from "@mui/material";
 import { TasksContext } from "../contexts/TasksContext";
+import Task from "./Task";
 
 export default function Tasks() {
   const { tasks } = useContext(TasksContext);
+
+  const allTasks = tasks.map((task) => {
+    return (
+      <Task id={task.id} title={task.title} description={task.description} />
+    );
+  });
 
   return (
     <Box sx={{ marginTop: "20px" }}>
@@ -20,89 +24,8 @@ export default function Tasks() {
       >
         <h2>Tasks</h2>
       </Box>
-      <Divider />
-      {tasks.map((task) => (
-        <Box
-          key={task.id}
-          sx={{
-            bgcolor: "info.main",
-            marginBottom: "10px",
-            padding: "10px",
-            borderRadius: "5px",
-            color: "common.white",
-          }}
-        >
-          <Grid container spacing={2} alignItems="center">
-            <Grid size={9}>
-              <Typography variant="h6">{task.title}</Typography>
-              {task.description !== "" ? (
-                <Typography sx={{ fontSize: "12px" }}>
-                  {task.description}
-                </Typography>
-              ) : (
-                ""
-              )}
-            </Grid>
-            <Grid
-              size={3}
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              <IconButton
-                sx={{
-                  width: 36,
-                  height: 36,
-                  border: "2px solid",
-                  borderColor: "error.main",
-                  color: "error.main",
-                  backgroundColor: "common.white",
-                  "&:hover": {
-                    backgroundColor: "error.light",
-                  },
-                }}
-              >
-                <DeleteOutlinedIcon fontSize="small" />
-              </IconButton>
-
-              <IconButton
-                sx={{
-                  width: 36,
-                  height: 36,
-                  border: "2px solid",
-                  borderColor: "primary.main",
-                  color: "primary.main",
-                  backgroundColor: "common.white",
-                  "&:hover": {
-                    backgroundColor: "primary.light",
-                  },
-                }}
-              >
-                <EditIcon fontSize="small" />
-              </IconButton>
-
-              <IconButton
-                sx={{
-                  width: 36,
-                  height: 36,
-                  border: "2px solid",
-                  borderColor: "success.main",
-                  color: "success.main",
-                  backgroundColor: "common.white",
-                  "&:hover": {
-                    backgroundColor: "success.light",
-                  },
-                }}
-              >
-                <CheckIcon fontSize="small" />
-              </IconButton>
-            </Grid>
-          </Grid>
-        </Box>
-      ))}
+      <Divider sx={{ marginBottom: "20px" }} />
+      {allTasks}
     </Box>
   );
 }

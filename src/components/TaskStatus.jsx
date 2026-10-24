@@ -10,8 +10,8 @@ export default function TaskStatus() {
         marginTop: "20px",
       }}
     >
-      <ButtonGroup variant="outlined" aria-label="Basic button group">
-        <Button>All</Button>
+      <ButtonGroup aria-label="Basic button group">
+        <Button variant="contained">All</Button>
         <Button>Completed</Button>
         <Button>Incomplete</Button>
       </ButtonGroup>
