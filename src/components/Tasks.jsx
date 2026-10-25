@@ -7,9 +7,7 @@ export default function Tasks() {
   const { tasks } = useContext(TasksContext);
 
   const allTasks = tasks.map((task) => {
-    return (
-      <Task id={task.id} title={task.title} description={task.description} />
-    );
+    return <Task task={task} />;
   });
 
   return (

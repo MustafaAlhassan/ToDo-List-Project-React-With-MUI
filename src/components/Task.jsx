@@ -1,12 +1,23 @@
+import { useContext } from "react";
 import { Box, Grid, Typography, IconButton } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { TasksContext } from "../contexts/TasksContext";
+import { SnackbarContext } from "../contexts/SnackbarContext";
 
-export default function Tasks({ id, title, description }) {
+export default function Tasks({ task }) {
+  const { handleTaskChecked } = useContext(TasksContext);
+  const { showSnackbar } = useContext(SnackbarContext);
+
+  function handleTaskCheckedClick() {
+    handleTaskChecked(task.id);
+    if (task.isCompleted) showSnackbar("Task Back to uncompeleted", "info");
+    else showSnackbar("Task Compeleted Successfully!", "success");
+  }
   return (
     <Box
-      key={id}
+      key={task.id}
       sx={{
         bgcolor: "info.main",
         marginBottom: "10px",
@@ -17,9 +28,11 @@ export default function Tasks({ id, title, description }) {
     >
       <Grid container spacing={2} alignItems="center">
         <Grid size={9}>
-          <Typography variant="h6">{title}</Typography>
-          {description !== "" ? (
-            <Typography sx={{ fontSize: "12px" }}>{description}</Typography>
+          <Typography variant="h6">{task.title}</Typography>
+          {task.description !== "" ? (
+            <Typography sx={{ fontSize: "12px" }}>
+              {task.description}
+            </Typography>
           ) : (
             ""
           )}
@@ -71,12 +84,15 @@ export default function Tasks({ id, title, description }) {
               height: 36,
               border: "2px solid",
               borderColor: "success.main",
-              color: "success.main",
-              backgroundColor: "common.white",
+              color: task.isCompleted ? "common.white" : "success.main",
+              backgroundColor: task.isCompleted
+                ? "success.main"
+                : "common.white",
               "&:hover": {
                 backgroundColor: "success.light",
               },
             }}
+            onClick={handleTaskCheckedClick}
           >
             <CheckIcon fontSize="small" />
           </IconButton>

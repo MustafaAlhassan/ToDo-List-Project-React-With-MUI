@@ -14,7 +14,7 @@ const initialStatus = [
     id: uuidv4(),
     title: "Learn Context",
     description: "ipsum ipsum ipsum ipsum",
-    isCompleted: true,
+    isCompleted: false,
   },
 ];
 
@@ -25,8 +25,18 @@ export default function TasksProvider({ children }) {
     setTasks([...tasks, newTask]);
   }
 
+  function handleTaskChecked(todoId) {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === todoId
+          ? { ...task, isCompleted: !task.isCompleted }
+          : task,
+      ),
+    );
+  }
+
   return (
-    <TasksContext.Provider value={{ tasks, AddNewTask }}>
+    <TasksContext.Provider value={{ tasks, AddNewTask, handleTaskChecked }}>
       {children}
     </TasksContext.Provider>
   );
