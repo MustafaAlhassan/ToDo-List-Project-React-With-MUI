@@ -21,22 +21,28 @@ const initialStatus = [
 export default function TasksProvider({ children }) {
   const [tasks, setTasks] = useState(initialStatus);
 
-  function AddNewTask(newTask) {
+  function handleAddNewTask(newTask) {
     setTasks([...tasks, newTask]);
   }
 
-  function handleTaskChecked(todoId) {
+  function handleTaskChecked(taskId) {
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
-        task.id === todoId
-          ? { ...task, isCompleted: !task.isCompleted }
-          : task,
+        task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task,
       ),
     );
   }
 
+  function handleDeleteTask(taskId) {
+    setTasks(
+      tasks.filter((task) => {
+        return task.id != taskId;
+      }),
+    );
+  }
+
   return (
-    <TasksContext.Provider value={{ tasks, AddNewTask, handleTaskChecked }}>
+    <TasksContext.Provider value={{ tasks, handleAddNewTask, handleTaskChecked, handleDeleteTask }}>
       {children}
     </TasksContext.Provider>
   );

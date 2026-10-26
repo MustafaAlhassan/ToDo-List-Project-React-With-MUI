@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export default function AddTask() {
   const [titleInput, setTitleInput] = useState("");
-  const { AddNewTask } = useContext(TasksContext);
+  const { handleAddNewTask } = useContext(TasksContext);
   const { showSnackbar } = useContext(SnackbarContext);
 
   function handleAddClick() {
@@ -22,7 +22,7 @@ export default function AddTask() {
       isCompleted: false,
     };
 
-    AddNewTask(newTask);
+    handleAddNewTask(newTask);
     setTitleInput("");
     showSnackbar("Task Add Successfully!", "success");
   }
