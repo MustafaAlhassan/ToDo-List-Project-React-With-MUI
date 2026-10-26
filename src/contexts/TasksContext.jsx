@@ -41,8 +41,32 @@ export default function TasksProvider({ children }) {
     );
   }
 
+  function handleUpdatedTask(taskId, updatedTask) {
+    setTasks(
+      tasks.map((task) => {
+        if (task.id == taskId) {
+          return {
+            ...task,
+            title: updatedTask.title,
+            description: updatedTask.description,
+          };
+        } else {
+          return task;
+        }
+      }),
+    );
+  }
+
   return (
-    <TasksContext.Provider value={{ tasks, handleAddNewTask, handleTaskChecked, handleDeleteTask }}>
+    <TasksContext.Provider
+      value={{
+        tasks,
+        handleAddNewTask,
+        handleTaskChecked,
+        handleDeleteTask,
+        handleUpdatedTask,
+      }}
+    >
       {children}
     </TasksContext.Provider>
   );
