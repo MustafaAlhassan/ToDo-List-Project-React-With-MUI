@@ -1,13 +1,15 @@
 import { useContext } from "react";
-import { Box, Divider } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import { TasksContext } from "../contexts/TasksContext";
 import Task from "./Task";
 
 export default function Tasks() {
-  const { tasks } = useContext(TasksContext);
+  const { tasks, filter } = useContext(TasksContext);
 
-  const allTasks = tasks.map((task) => {
-    return <Task key={task.id} task={task} />;
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "completed") return task.isCompleted;
+    if (filter === "not-completed") return !task.isCompleted;
+    return true;
   });
 
   return (
@@ -23,7 +25,14 @@ export default function Tasks() {
         <h2>Tasks</h2>
       </Box>
       <Divider sx={{ marginBottom: "20px" }} />
-      {allTasks}
+
+      {filteredTasks.length === 0 ? (
+        <Typography textAlign="center" color="text.secondary">
+         there is no Task to display!
+        </Typography>
+      ) : (
+        filteredTasks.map((task) => <Task key={task.id} task={task} />)
+      )}
     </Box>
   );
 }

@@ -1,6 +1,17 @@
-import { Box, Button, ButtonGroup } from "@mui/material";
+import { Box, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import { useContext } from "react";
+import { TasksContext } from "../contexts/TasksContext";
 
 export default function TaskStatus() {
+  const { filter, setFilter } = useContext(TasksContext);
+
+  const handleFilterChange = (e, newFilter) => {
+    if (newFilter !== null) {
+      setFilter(newFilter);
+      console.log(newFilter)
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -10,11 +21,17 @@ export default function TaskStatus() {
         marginTop: "20px",
       }}
     >
-      <ButtonGroup aria-label="Basic button group">
-        <Button variant="contained">All</Button>
-        <Button>Completed</Button>
-        <Button>Incomplete</Button>
-      </ButtonGroup>
+      <ToggleButtonGroup
+        color="primary"
+        value={filter}
+        exclusive
+        onChange={handleFilterChange}
+        aria-label="Task Filter"
+      >
+        <ToggleButton value="all">All</ToggleButton>
+        <ToggleButton value="completed">Completed</ToggleButton>
+        <ToggleButton value="not-completed">Not Completed</ToggleButton>
+      </ToggleButtonGroup>
     </Box>
   );
 }

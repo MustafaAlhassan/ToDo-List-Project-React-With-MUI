@@ -8,16 +8,14 @@ export default function TasksProvider({ children }) {
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
 
+  const [filter, setFilter] = useState("all");
+
   useEffect(() => {
     localStorage.setItem("Tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  function saveTasks(tasks) {
-    localStorage.setItem("Tasks", JSON.stringify(tasks));
-  }
-
   function handleAddNewTask(newTask) {
-    setTasks([...tasks, newTask]);
+    setTasks((prev) => [...prev, newTask]);
   }
 
   function handleTaskChecked(taskId) {
@@ -29,34 +27,30 @@ export default function TasksProvider({ children }) {
   }
 
   function handleDeleteTask(taskId) {
-    setTasks(
-      tasks.filter((task) => {
-        return task.id != taskId;
-      }),
-    );
+    setTasks((prev) => prev.filter((task) => task.id !== taskId));
   }
 
   function handleUpdatedTask(taskId, updatedTask) {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id == taskId) {
+    setTasks((prev) =>
+      prev.map((task) => {
+        if (task.id === taskId) {
           return {
             ...task,
             title: updatedTask.title,
             description: updatedTask.description,
           };
-        } else {
-          return task;
         }
+        return task;
       }),
     );
-    saveTasks(tasks);
   }
 
   return (
     <TasksContext.Provider
       value={{
         tasks,
+        filter,
+        setFilter,
         handleAddNewTask,
         handleTaskChecked,
         handleDeleteTask,
