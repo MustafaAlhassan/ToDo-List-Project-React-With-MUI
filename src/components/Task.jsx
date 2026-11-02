@@ -69,7 +69,7 @@ export default function Tasks({ task }) {
       <Box
         key={task.id}
         sx={{
-          bgcolor: "info.main",
+          bgcolor: "secondary.main",
           marginBottom: "10px",
           padding: "10px",
           borderRadius: "5px",
@@ -78,9 +78,21 @@ export default function Tasks({ task }) {
       >
         <Grid container spacing={2}>
           <Grid size={9}>
-            <Typography variant="h6">{task.title}</Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                textDecoration: task.isCompleted ? "line-through" : "none",
+              }}
+            >
+              {task.title}
+            </Typography>
             {task.description !== "" ? (
-              <Typography sx={{ fontSize: "12px" }}>
+              <Typography
+                sx={{
+                  fontSize: "12px",
+                  textDecoration: task.isCompleted ? "line-through" : "none",
+                }}
+              >
                 {task.description}
               </Typography>
             ) : (
