@@ -1,10 +1,64 @@
-import { useContext } from "react";
-import { Box, Divider, Typography } from "@mui/material";
+import { useContext, useState } from "react";
+import {
+  Box,
+  Divider,
+  Typography,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { TasksContext } from "../contexts/TasksContext";
 import Task from "./Task";
+import { SnackbarContext } from "../contexts/SnackbarContext";
 
 export default function Tasks() {
-  const { tasks, filter } = useContext(TasksContext);
+  const { tasks, filter, handleDeleteTask, handleUpdatedTask } =
+    useContext(TasksContext);
+  const { showSnackbar } = useContext(SnackbarContext);
+
+  const [taskToDelete, setTaskToDelete] = useState(null);
+  const [taskToEdit, setTaskToEdit] = useState(null);
+
+  const openDeleteTaskClick = (task) => {
+    setTaskToDelete(task);
+  };
+
+  const handleDeleteClose = () => {
+    setTaskToDelete(null);
+  };
+
+  const handleDeleteTaskConfirmation = () => {
+    if (taskToDelete) {
+      handleDeleteTask(taskToDelete.id);
+      showSnackbar("Task Deleted Successfully!", "success");
+      handleDeleteClose();
+    }
+  };
+
+  const openEditTaskClick = (task) => {
+    setTaskToEdit(task);
+  };
+
+  const handleEditClose = () => {
+    setTaskToEdit(null);
+  };
+
+  const handleEditTaskConfirmation = () => {
+    if (!taskToEdit) return;
+
+    if (taskToEdit.title.trim() === "") {
+      showSnackbar("The title can not be empty!", "error");
+      return;
+    }
+
+    handleUpdatedTask(taskToEdit.id, taskToEdit);
+    showSnackbar("Task Updated Successfully!", "success");
+    handleEditClose();
+  };
 
   const filteredTasks = tasks.filter((task) => {
     if (filter === "completed") return task.isCompleted;
@@ -13,26 +67,89 @@ export default function Tasks() {
   });
 
   return (
-    <Box sx={{ marginTop: "20px" }}>
-      <Divider />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <h2>Tasks</h2>
-      </Box>
-      <Divider sx={{ marginBottom: "20px" }} />
+    <>
+      <Box sx={{ marginTop: "20px" }}>
+        <Divider />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h2>Tasks</h2>
+        </Box>
+        <Divider sx={{ marginBottom: "20px" }} />
 
-      {filteredTasks.length === 0 ? (
-        <Typography textAlign="center" color="text.secondary">
-         there is no Task to display!
-        </Typography>
-      ) : (
-        filteredTasks.map((task) => <Task key={task.id} task={task} />)
-      )}
-    </Box>
+        {filteredTasks.length === 0 ? (
+          <Typography textAlign="center" color="text.secondary">
+            there is no Task to display!
+          </Typography>
+        ) : (
+          filteredTasks.map((task) => (
+            <Task
+              key={task.id}
+              task={task}
+              showDeleteDialog={() => openDeleteTaskClick(task)}
+              showEditDialog={() => openEditTaskClick(task)}
+            />
+          ))
+        )}
+      </Box>
+
+      <Dialog open={Boolean(taskToDelete)} onClose={handleDeleteClose}>
+        <DialogTitle>Are you sure to delete task?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You can't retrieval task after deleted.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteClose} autoFocus>
+            No
+          </Button>
+          <Button onClick={handleDeleteTaskConfirmation} color="error">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={Boolean(taskToEdit)} onClose={handleEditClose}>
+        <DialogTitle>Edit Task</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Title"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={taskToEdit?.title || ""}
+            onChange={(e) =>
+              setTaskToEdit({ ...taskToEdit, title: e.target.value })
+            }
+          />
+          <TextField
+            margin="dense"
+            label="Description"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={taskToEdit?.description || ""}
+            onChange={(e) =>
+              setTaskToEdit({ ...taskToEdit, description: e.target.value })
+            }
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditClose} autoFocus>
+            Cancel
+          </Button>
+          <Button onClick={handleEditTaskConfirmation} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
