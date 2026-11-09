@@ -1,14 +1,13 @@
 import { Box, ToggleButtonGroup, ToggleButton } from "@mui/material";
-import { useContext } from "react";
-import { TasksContext } from "../contexts/TasksContext";
+import { useTasks } from "../contexts/TasksContext";
 
 export default function TaskStatus() {
-  const { filter, setFilter } = useContext(TasksContext);
+  const { filter, setFilter } = useTasks();
 
   const handleFilterChange = (e, newFilter) => {
     if (newFilter !== null) {
       setFilter(newFilter);
-      console.log(newFilter)
+      console.log(newFilter);
     }
   };
 

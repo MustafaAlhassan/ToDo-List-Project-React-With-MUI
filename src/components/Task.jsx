@@ -1,14 +1,13 @@
-import { useContext } from "react";
 import { Box, Grid, Typography, IconButton } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import { TasksContext } from "../contexts/TasksContext";
-import { SnackbarContext } from "../contexts/SnackbarContext";
+import { useTasks } from "../contexts/TasksContext";
+import { useSnackbar } from "../contexts/SnackbarContext";
 
 export default function Task({ task, showDeleteDialog, showEditDialog }) {
-  const { handleTaskChecked } = useContext(TasksContext);
-  const { showSnackbar } = useContext(SnackbarContext);
+  const { handleTaskChecked } = useTasks();
+  const { showSnackbar } = useSnackbar();
 
   const handleTaskCheckedClick = () => {
     handleTaskChecked(task.id);
@@ -94,7 +93,9 @@ export default function Task({ task, showDeleteDialog, showEditDialog }) {
               border: "2px solid",
               borderColor: "success.main",
               color: task.isCompleted ? "common.white" : "success.main",
-              backgroundColor: task.isCompleted ? "success.main" : "common.white",
+              backgroundColor: task.isCompleted
+                ? "success.main"
+                : "common.white",
               "&:hover": { backgroundColor: "success.light" },
             }}
             onClick={handleTaskCheckedClick}

@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Grid, TextField, Button } from "@mui/material";
-import { TasksContext } from "../contexts/TasksContext";
-import { SnackbarContext } from "../contexts/SnackbarContext";
+import { useTasks } from "../contexts/TasksContext";
 import { v4 as uuidv4 } from "uuid";
+import { useSnackbar } from "../contexts/SnackbarContext";
 
 export default function AddTask() {
   const [titleInput, setTitleInput] = useState("");
-  const { handleAddNewTask } = useContext(TasksContext);
-  const { showSnackbar } = useContext(SnackbarContext);
+  const { handleAddNewTask } = useTasks();
+  const { showSnackbar } = useSnackbar();
 
   function handleAddClick() {
     if (titleInput.trim() === "") {

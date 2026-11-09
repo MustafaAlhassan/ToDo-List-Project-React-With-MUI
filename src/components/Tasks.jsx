@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Divider,
@@ -11,14 +11,13 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { TasksContext } from "../contexts/TasksContext";
+import { useTasks } from "../contexts/TasksContext";
 import Task from "./Task";
-import { SnackbarContext } from "../contexts/SnackbarContext";
+import { useSnackbar } from "../contexts/SnackbarContext";
 
 export default function Tasks() {
-  const { tasks, filter, handleDeleteTask, handleUpdatedTask } =
-    useContext(TasksContext);
-  const { showSnackbar } = useContext(SnackbarContext);
+  const { tasks, filter, handleDeleteTask, handleUpdatedTask } = useTasks();
+  const { showSnackbar } = useSnackbar();
 
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [taskToEdit, setTaskToEdit] = useState(null);

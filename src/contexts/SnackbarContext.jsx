@@ -1,7 +1,11 @@
-import { createContext, useState, useCallback } from "react";
+import { createContext, useState, useCallback, useContext } from "react";
 import { Snackbar, Alert } from "@mui/material";
 
-export const SnackbarContext = createContext();
+const SnackbarContext = createContext();
+
+export const useSnackbar = () => {
+  return useContext(SnackbarContext);
+};
 
 export function SnackbarProvider({ children }) {
   const [snackbar, setSnackbar] = useState({
