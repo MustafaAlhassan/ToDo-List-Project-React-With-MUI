@@ -1,59 +1,43 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useEffect, useReducer, useContext } from "react";
+import { tasksReducer, initialState } from "../reducers/tasksReducer";
 
-const TasksContext = createContext();
-
-export const useTasks = () => {
-  return useContext(TasksContext);
-};
+export const TasksContext = createContext();
 
 export default function TasksProvider({ children }) {
-  const [tasks, setTasks] = useState(() => {
+  const init = () => {
     const savedTasks = localStorage.getItem("Tasks");
-    return savedTasks ? JSON.parse(savedTasks) : [];
-  });
+    if (savedTasks) {
+      return { ...initialState, tasks: JSON.parse(savedTasks) };
+    }
+    return initialState;
+  };
 
-  const [filter, setFilter] = useState("all");
+  const [state, dispatch] = useReducer(tasksReducer, initialState, init);
 
   useEffect(() => {
-    localStorage.setItem("Tasks", JSON.stringify(tasks));
-  }, [tasks]);
+    localStorage.setItem("Tasks", JSON.stringify(state.tasks));
+  }, [state.tasks]);
 
-  function handleAddNewTask(newTask) {
-    setTasks((prev) => [...prev, newTask]);
-  }
+  const handleAddNewTask = (newTask) =>
+    dispatch({ type: "ADD_TASK", payload: newTask });
 
-  function handleTaskChecked(taskId) {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task,
-      ),
-    );
-  }
+  const handleTaskChecked = (taskId) =>
+    dispatch({ type: "TOGGLE_TASK", payload: taskId });
 
-  function handleDeleteTask(taskId) {
-    setTasks((prev) => prev.filter((task) => task.id !== taskId));
-  }
+  const handleDeleteTask = (taskId) =>
+    dispatch({ type: "DELETE_TASK", payload: taskId });
 
-  function handleUpdatedTask(taskId, updatedTask) {
-    setTasks((prev) =>
-      prev.map((task) => {
-        if (task.id === taskId) {
-          return {
-            ...task,
-            title: updatedTask.title,
-            description: updatedTask.description,
-          };
-        }
-        return task;
-      }),
-    );
-  }
+  const handleUpdatedTask = (taskId, updatedTask) =>
+    dispatch({ type: "UPDATE_TASK", payload: { id: taskId, updatedTask } });
+
+  const setFilter = (filterValue) =>
+    dispatch({ type: "SET_FILTER", payload: filterValue });
 
   return (
     <TasksContext.Provider
       value={{
-        tasks,
-        filter,
+        tasks: state.tasks,
+        filter: state.filter,
         setFilter,
         handleAddNewTask,
         handleTaskChecked,
@@ -65,3 +49,7 @@ export default function TasksProvider({ children }) {
     </TasksContext.Provider>
   );
 }
+
+export const useTasks = () => {
+  return useContext(TasksContext);
+};
